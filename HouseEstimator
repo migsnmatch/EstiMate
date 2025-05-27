@@ -1,12 +1,16 @@
-const express = require('express');
-const cors = require('cors');
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
 app.post('/estimate', (req, res) => {
   const { lotSize, levels, finish, design } = req.body;
+
+  console.log('Received input:', { lotSize, levels, finish, design });
+
+  // Validate input
+  if (
+    typeof lotSize !== 'number' ||
+    typeof levels !== 'number' ||
+    typeof finish !== 'string'
+  ) {
+    return res.status(400).json({ error: 'Invalid input types' });
+  }
 
   let costPerSqm;
   switch (finish) {
@@ -21,6 +25,3 @@ app.post('/estimate', (req, res) => {
 
   res.json({ estimatedCost });
 });
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
